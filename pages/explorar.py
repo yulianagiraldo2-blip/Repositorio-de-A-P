@@ -67,7 +67,7 @@ def filtrar_canciones(df, titulo="", genero="Todos", artista="", rango_anios=Non
 canciones = cargar_canciones()  # Cargar las canciones desde el archivo CSV
 
 
-### INICIALIZACIÓN DE VARIABLES DE SESIÓN
+### Inicialización de variables
 if "canciones_favoritas" not in st.session_state:
     st.session_state["canciones_favoritas"] = []
 
@@ -75,12 +75,11 @@ if "canciones_escuchadas" not in st.session_state:
     st.session_state["canciones_escuchadas"] = []
 
 
-### ESTRUCTURA VISUAL DE LA PÁGINA
-st.title("🔍 Explorar")
+### Estructura visual de la página
+st.title("Explorar")
 
 
-## FILTROS DE BÚSQUEDA
-# ------------------------------------------------------------------------------
+## Filtros de búsqueda
 titulo_buscar = st.text_input(
     "Buscar por título:", placeholder="Escribe el título de la canción..."
 )
@@ -89,14 +88,14 @@ col1, col2, col3 = st.columns(3)
 with col1:
     lista_generos = ["Todos"] + sorted(canciones["genero"].dropna().unique().tolist())
     search_genre = st.selectbox(
-        "🎭 Género",
+        "Género",
         options=lista_generos,
         index=0,
     )
 
 with col2:
     search_artist = st.text_input(
-        "🎤 Artista",
+        "Artista",
         placeholder="Ej. Queen, Michael Jackson",
     )
 
@@ -104,7 +103,7 @@ with col3:
     anio_min = int(canciones["anio"].min())
     anio_max = int(canciones["anio"].max())
     search_years = st.slider(
-        "📅 Rango de años",
+        "Rango de años",
         min_value=anio_min,
         max_value=anio_max,
         value=(anio_min, anio_max),
@@ -118,9 +117,7 @@ canciones_filtradas = filtrar_canciones(
     rango_anios=search_years,
 )
 
-
-# PRESENTACIÓN DE RESULTADOS EN TABLA FILTRADA
-# ------------------------------------------------------------------------------
+# Resultados en tabla
 st.divider()
 st.subheader(f"{len(canciones_filtradas):,} canciones encontradas")
 
@@ -145,11 +142,11 @@ seleccion = st.selectbox(
 cant_canciones_mostrar = opciones[seleccion]
 nombres_columnas = {
     "id": "id",
-    "titulo": "🎵 Canción",
-    "artista": "🎤 Artista",
-    "genero": "🎭 Género",
-    "anio": "📅 Año",
-    "decada": "🕰️ Década",
+    "titulo": "Canción",
+    "artista": "Artista",
+    "genero": "Género",
+    "anio": "Año",
+    "decada": "Década",
 }
 
 tabla_mostrar = (
@@ -168,10 +165,9 @@ eventos_tabla = st.dataframe(
 )
 
 
-## PRESENTACIÓN DE DETALLES DE LA CANCIÓN SELECCIONADA
-# ------------------------------------------------------------------------------
+## Presentación de detalle canción seleccionada
 if eventos_tabla.selection.rows:
-    st.info("🎵 Ésta es la canción que escogiste:")
+    st.info("Esta es la canción que escogiste:")
 
     cancion = canciones_filtradas.iloc[eventos_tabla.selection.rows[0]]
     total_artista = int((canciones["artista"] == cancion["artista"]).sum())
@@ -208,12 +204,12 @@ if eventos_tabla.selection.rows:
         st.subheader(cancion["titulo"])
         st.caption(f"Interpretada por {cancion['artista']} — Clásico de los años {cancion['decada']}s")
 
-        artista_txt = f"🎤 Artista: {cancion['artista']}"
-        genero_txt = f"🎭 Género: {cancion['genero']}"
-        anio_txt = f"📅 Año: {cancion['anio']} ({antiguedad} años)"
-        decada_txt = f"🕰️ Década: {cancion['decada']}s"
-        cat_artista = f"💿 En catálogo (artista): {total_artista} canción(es)"
-        cat_genero = f"🎶 En catálogo (género): {total_genero} canción(es)"
+        artista_txt = f"Artista: {cancion['artista']}"
+        genero_txt = f"Género: {cancion['genero']}"
+        anio_txt = f"Año: {cancion['anio']} ({antiguedad} años)"
+        decada_txt = f"Década: {cancion['decada']}s"
+        cat_artista = f"En catálogo (artista): {total_artista} canción(es)"
+        cat_genero = f"En catálogo (género): {total_genero} canción(es)"
 
         st.markdown(
             f"""
@@ -242,16 +238,15 @@ if eventos_tabla.selection.rows:
                 st.session_state["canciones_escuchadas"].append(id_cancion)
                 st.rerun()
 else:
-    st.info("👆 Selecciona una canción en la tabla para ver más detalles.")
+    st.info("Selecciona una canción en la tabla para ver más detalles.")
 
 
-## ESTADÍSTICAS DESCRIPTIVAS Y VISUALIZACIÓN DE GRÁFICOS DEL DATAFRAME
-# ------------------------------------------------------------------------------
+## Estadística y visualización de gráficos
 if canciones_filtradas.shape[0] > 0:
     st.divider()
     st.subheader(f"Estadísticas de {canciones_filtradas.shape[0]:,} canciones")
 
-    # -------- Resumen de los filtros aplicados --------
+    #  Resumen de los filtros aplicados
     filtros_activos = []
 
     if titulo_buscar.strip():
@@ -271,7 +266,7 @@ if canciones_filtradas.shape[0] > 0:
     else:
         st.info("No hay filtros aplicados | Mostrando todas las canciones.")
 
-    # -------- Indicadores descriptivos (4 métricas dinámicas) --------
+    # Indicadores descriptivos (4 métricas dinámicas)
     porcentaje_cat = (len(canciones_filtradas) / len(canciones)) * 100
     genero_top = canciones_filtradas["genero"].value_counts().idxmax()
     anio_promedio = int(round(canciones_filtradas["anio"].mean()))
@@ -282,7 +277,7 @@ if canciones_filtradas.shape[0] > 0:
     m3.metric("Géneros activos", f"{canciones_filtradas['genero'].nunique()}")
     m4.metric("Género predominante", genero_top, f"Año promedio: {anio_promedio}")
 
-    # -------- Gráficos interactivos con Plotly --------
+    # Gráficos interactivos con Plotly
     top_artistas = (
         canciones_filtradas["artista"]
         .value_counts()
