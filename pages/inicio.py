@@ -1,3 +1,4 @@
+#Preparación del entorno
 import streamlit as st
 import base64
 import mimetypes
@@ -9,7 +10,6 @@ df = cargar_datos()
 r = resumen(df)
 
 # Diseño
-
 st.markdown("""
 <style>
 
@@ -157,10 +157,7 @@ hr {
 """, unsafe_allow_html=True)
 
 
-# ---------------------------------
-# LOGO Y ENCABEZADO
-# ---------------------------------
-
+# Logo y encabezado
 logo = """<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <linearGradient id="vmgrad" x1="0" y1="0" x2="1" y2="1">
@@ -188,21 +185,15 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# ---------------------------------
-# ESTADISTICAS
-# ---------------------------------
-
+# Estadística
 c1, c2, c3, c4 = st.columns(4)
 
-c1.metric("🎵 Canciones", r["canciones"])
-c2.metric("🎤 Artistas", r["artistas"])
-c3.metric("🎧 Géneros", r["generos"])
-c4.metric("📅 Años", f'{r["anio_min"]} – {r["anio_max"]}')
+c1.metric("Canciones", r["canciones"])
+c2.metric("Artistas", r["artistas"])
+c3.metric("Géneros", r["generos"])
+c4.metric("Años", f'{r["anio_min"]} – {r["anio_max"]}')
 
-# ---------------------------------
-# INTRODUCCIÓN DATOS
-# ---------------------------------
- 
+# Introducción datos
 st.subheader(" Sobre lo datos")
 st.markdown(""" 
 <div class="vm-info-box">
@@ -212,20 +203,16 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
-# ---------------------------------
-# FUNCIONES DE LA PAGINA
-# ---------------------------------
-
+# Funcionalidades de la página
 st.markdown("<br>", unsafe_allow_html=True)
-st.subheader("✨ ¿Qué puedes hacer aquí?")
+st.subheader("¿Qué puedes hacer aquí?")
 
 a, b, c = st.columns(3)
 
 with a:
     st.markdown("""
 <div class="vm-card">
-<b>🔎 Explorar</b>
+<b> Explorar</b>
 <p>Filtra canciones por género, año o artista y descubre gráficos.</p>
 </div>
 """, unsafe_allow_html=True)
@@ -233,7 +220,7 @@ with a:
 with b:
     st.markdown("""
 <div class="vm-card">
-<b>🎮 Jugar</b>
+<b> Jugar</b>
 <p>Demuestra tus conocimientos adivinando el género y la década.</p>
 </div>
 """, unsafe_allow_html=True)
@@ -246,11 +233,7 @@ with c:
 </div>
 """, unsafe_allow_html=True)
 
-
-# ---------------------------------
 # EQUIPO
-# ---------------------------------
-
 st.markdown("<br>", unsafe_allow_html=True)
 st.subheader("💜 Nuestro equipo")
 st.markdown("""
@@ -294,14 +277,12 @@ for col, (archivo, nombre) in zip(cols, integrantes):
 
         else:
             st.info(f"Falta la foto de {nombre} en assets/")
-# ---------------------------------
-# 6. CRÉDITOS Y LICENCIAS
-# ---------------------------------
 
+# Créditos y licencias
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("---")
 st.markdown("""
-### 📜 Créditos y Licencias
+### Créditos y Licencias
 * **Desarrolladores:** Leydy Peñates, Katherine Jaramillo y Yuliana Giraldo.
 * **Recursos Gráficos:** Iconos vectoriales personalizados en SVG y diseño de interfaz con Streamlit.
 * **Licencia:**
