@@ -1,10 +1,97 @@
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 
 from src.data import cargar_datos
 
 st.title("❤️ Mi Música")
 df = cargar_datos()
+
+# Verificar que existan las variables de sesión 
+if "canciones_favoritas" not in st.session_state:
+    st.session_state["canciones_favoritas"] = []
+
+if "canciones_escuchadas" not in st.session_state:
+    st.session_state["canciones_escuchadas"] = []
+
+if "historial_partidas" not in st.session_state:
+    st.session_state["historial_partidas"] = []
+
+# Comprobar si hay actividad real
+tiene_favoritas = len(st.session_state["canciones_favoritas"]) > 0
+tiene_escuchadas = len(st.session_state["canciones_escuchadas"]) > 0
+tiene_partidas = len(st.session_state["historial_partidas"]) > 0
+
+
+# Estado sin actividad
+
+if not (tiene_favoritas or tiene_escuchadas or tiene_partidas):
+    st.info("""
+     **¡Aún no hay actividad registrada en esta sesión!**
+    
+    Para ver información en este panel:
+    * Ve a la sección **Explorar**, selecciona canciones y guárdalas en tus favoritas o márcalas como escuchadas.
+    * Ve a la sección **Jugar**, completa algunas partidas de adivinanzas.
+    """)
+    st.stop()
+
+# Resumen de actividad
+
+st.subheader(" Resumen General")
+
+total_partidas = len(st.session_state["historial_partidas"])
+total_favs = len(st.session_state["canciones_favoritas"])
+total_escuchadas = len(st.session_state["canciones_escuchadas"])
+
+if total_partidas > 0:
+    mejor_puntaje = max(p["puntos"] for p in st.session_state["historial_partidas"])
+    puntaje_promedio = sum(p["puntos"] for p in st.session_state["historial_partidas"]) / total_partidas
+else:
+    mejor_puntaje = 0
+    puntaje_promedio = 0.0
+
+col1, col2, col3, col4 = st.columns(4)
+col1.metric(" Partidas Jugadas", total_partidas)
+col2.metric(" Mejor Puntaje", f"{mejor_puntaje} / 10" if total_partidas > 0 else "N/A")
+col3.metric("Canciones Favoritas", total_favs)
+col4.metric("Canciones Escuchadas", total_escuchadas)
+
+st.divider()
+
+
+# Estadística y historial
+
+st.subheader("Historial y desempeño en juegos")
+
+if total_partidas == 0:
+    st.warning("Todavía no has jugado ninguna partida en la sección de Jugar.")
+else:
+    # Preparar DataFrame del historial de partidas
+    df_historial = pd.DataFrame(st.session_state["historial_partidas"])
+    df_historial.index = df_historial.index + 1  # Orden de juego (Partida 1, 2, 3...)
+    df_historial = df_historial.reset_index().rename(columns={"index": "Orden", "modo": "Modo de Juego", "puntos": "Puntaje", "total": "Total Preguntas"})
+    
+    col_h1, col_h2 = st.columns([1, 1])
+    
+    with col_h1:
+        st.write("**Resumen de partidas jugadas:**")
+        st.dataframe(df_historial, use_container_width=True, hide_index=True)
+        st.caption(f"Puntaje promedio de sesión: {puntaje_promedio:.1f} / 10")
+
+    with col_h2:
+        st.write("**Evolución del puntaje por partida:**")
+        fig_evolucion = px.line(
+            df_historial,
+            x="Orden",
+            y="Puntaje",
+            markers=True,
+            title="Progreso de puntajes en el tiempo",
+            color_discrete_sequence=["#8B5CF6"]
+        )
+        fig_evolucion.update_layout(yaxis=dict(range=[0, 11]))
+        st.plotly_chart(fig_evolucion, use_container_width=True)
+
+st.divider()
 
 # Lista de favoritas guardada en la sesión
 if "favoritas" not in st.session_state:
