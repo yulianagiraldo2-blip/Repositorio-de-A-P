@@ -9,7 +9,9 @@ df = cargar_datos()
 
 N_PREGUNTAS = 10
 
-
+if "historial_partidas" not in st.session_state:
+    st.session_state["historial_partidas"] = []
+    
 def nueva_partida(modo: str):
     campo = "genero" if modo == "Adivina el género" else "decada"
     muestra = df.sample(N_PREGUNTAS)
@@ -44,13 +46,42 @@ def siguiente():
     j["i"] += 1
     j["respondida"] = False
     j["acierto"] = None
-
+    
+# Si termina la última pregunta, se guarda en el historial de la sesión
+    if j["i"] >= N_PREGUNTAS:
+        st.session_state["historial_partidas"].append({
+            "modo": j["modo"],
+            "puntos": j["puntos"],
+            "total": N_PREGUNTAS
+        })
 
 def terminar():
     st.session_state.pop("juego", None)
 
 
 # ---------- Pantalla de inicio ----------
+if "juego" not in st.session_state:
+    st.markdown("""
+    ### 📖 Instrucciones del Juego
+    * **Objetivo:** Demuestra tus conocimientos musicales adivinando el género o la década de las canciones del catálogo.
+    * **Reglas:** Se te presentarán **10 canciones** una a una. Para cada canción tendrás 4 opciones de respuesta. Selecciona la correcta y presiona **Responder**.
+    * **Puntuación:** Acumulas 1 punto por cada acierto. ¡Intenta conseguir el puntaje perfecto!
+    """)
+    
+    st.divider()
+
+    # Mostrar estadísticas acumuladas de la sesión si hay
+    historial = st.session_state["historial_partidas"]
+    if historial:
+        st.subheader("📊 Estadísticas de tus partidas en esta sesión")
+        partidas_jugadas = len(historial)
+        mejor_puntaje = max(p["puntos"] for p in historial)
+        
+        m1, m2 = st.columns(2)
+        m1.metric("Partidas jugadas", partidas_jugadas)
+        m2.metric("Mejor puntaje histórico", f"{mejor_puntaje} / {N_PREGUNTAS}")
+        st.divider()
+        
 if "juego" not in st.session_state:
     st.write(f"Responde {N_PREGUNTAS} preguntas sobre canciones. ¡Mira cuánto sabes!")
     modo = st.radio("Modo de juego", ["Adivina el género", "Adivina la década"], horizontal=True)
@@ -68,7 +99,7 @@ if j["i"] >= N_PREGUNTAS:
     elif j["puntos"] >= 5:
         st.info("¡Buen trabajo! Sigue practicando.")
     else:
-        st.warning("Hay que escuchar más música 🎧")
+        st.warning("Hay que escuchar más música ")
     st.button("Jugar de nuevo", type="primary", on_click=terminar)
     st.stop()
 
