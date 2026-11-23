@@ -1,14 +1,15 @@
+# Preparación del entorno
 import random
-
 import streamlit as st
 
 from src.data import cargar_datos
 
-st.title("🎮 Jugar")
+st.title("Jugar")
 df = cargar_datos()
 
 N_PREGUNTAS = 10
 
+# Inicialización de variables
 if "historial_partidas" not in st.session_state:
     st.session_state["historial_partidas"] = []
     
@@ -59,10 +60,10 @@ def terminar():
     st.session_state.pop("juego", None)
 
 
-# ---------- Pantalla de inicio ----------
+# Pantalla de inicio
 if "juego" not in st.session_state:
     st.markdown("""
-    ### 📖 Instrucciones del Juego
+    ### Instrucciones del Juego
     * **Objetivo:** Demuestra tus conocimientos musicales adivinando el género o la década de las canciones del catálogo.
     * **Reglas:** Se te presentarán **10 canciones** una a una. Para cada canción tendrás 4 opciones de respuesta. Selecciona la correcta y presiona **Responder**.
     * **Puntuación:** Acumulas 1 punto por cada acierto. ¡Intenta conseguir el puntaje perfecto!
@@ -73,7 +74,7 @@ if "juego" not in st.session_state:
     # Mostrar estadísticas acumuladas de la sesión si hay
     historial = st.session_state["historial_partidas"]
     if historial:
-        st.subheader("📊 Estadísticas de tus partidas en esta sesión")
+        st.subheader("Estadísticas de tus partidas en esta sesión")
         partidas_jugadas = len(historial)
         mejor_puntaje = max(p["puntos"] for p in historial)
         
@@ -85,12 +86,12 @@ if "juego" not in st.session_state:
 if "juego" not in st.session_state:
     st.write(f"Responde {N_PREGUNTAS} preguntas sobre canciones. ¡Mira cuánto sabes!")
     modo = st.radio("Modo de juego", ["Adivina el género", "Adivina la década"], horizontal=True)
-    st.button("Empezar 🚀", type="primary", on_click=nueva_partida, args=(modo,))
+    st.button("Empezar ", type="primary", on_click=nueva_partida, args=(modo,))
     st.stop()
 
 j = st.session_state.juego
 
-# ---------- Resultado final ----------
+# Resultado final
 if j["i"] >= N_PREGUNTAS:
     st.header(f"Puntaje final: {j['puntos']} / {N_PREGUNTAS}")
     if j["puntos"] >= 8:
@@ -103,7 +104,7 @@ if j["i"] >= N_PREGUNTAS:
     st.button("Jugar de nuevo", type="primary", on_click=terminar)
     st.stop()
 
-# ---------- Pregunta actual ----------
+# Pregunta actual
 p = j["preguntas"][j["i"]]
 st.progress(j["i"] / N_PREGUNTAS, text=f"Pregunta {j['i'] + 1} de {N_PREGUNTAS} · Puntos: {j['puntos']}")
 
@@ -119,8 +120,8 @@ if not j["respondida"]:
     st.button("Responder", type="primary", on_click=responder)
 else:
     if j["acierto"]:
-        st.markdown('<span class="vm-ok">✅ ¡Correcto!</span>', unsafe_allow_html=True)
+        st.markdown('<span class="vm-ok"> ¡Correcto!</span>', unsafe_allow_html=True)
     else:
-        st.markdown(f'<span class="vm-mal">❌ Era: {p["correcta"]}</span>', unsafe_allow_html=True)
-    etiqueta = "Siguiente ➡️" if j["i"] < N_PREGUNTAS - 1 else "Ver resultado 🏁"
+        st.markdown(f'<span class="vm-mal"> Era: {p["correcta"]}</span>', unsafe_allow_html=True)
+    etiqueta = "Siguiente ➡️" if j["i"] < N_PREGUNTAS - 1 else "Ver resultado "
     st.button(etiqueta, type="primary", on_click=siguiente)
