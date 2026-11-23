@@ -97,7 +97,7 @@ st.divider()
 if "favoritas" not in st.session_state:
     st.session_state.favoritas = []
 
-tab1, tab2, tab3 = st.tabs(["⭐ Mis favoritas", "➕ Agregar canción propia", "📁 Sobre los datos"])
+tab1, tab2, tab3 = st.tabs(["Mis favoritas", "Agregar canción propia", "Sobre los datos"])
 
 with tab1:
     opciones = (df["titulo"] + " — " + df["artista"]).tolist()
@@ -116,7 +116,7 @@ with tab1:
         st.subheader("Tus géneros favoritos")
         st.bar_chart(todas["genero"].value_counts())
         st.download_button(
-            "⬇️ Descargar mis favoritas (CSV)",
+            "Descargar mis favoritas (CSV)",
             todas.to_csv(index=False).encode("utf-8"),
             file_name="mis_favoritas.csv",
             mime="text/csv",
