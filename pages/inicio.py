@@ -199,6 +199,19 @@ c2.metric("🎤 Artistas", r["artistas"])
 c3.metric("🎧 Géneros", r["generos"])
 c4.metric("📅 Años", f'{r["anio_min"]} – {r["anio_max"]}')
 
+# ---------------------------------
+# INTRODUCCIÓN DATOS
+# ---------------------------------
+ 
+st.subheader(" Sobre lo datos")
+st.markdown(""" 
+<div class="vm-info-box">
+<b>Temática y Fuente:</b> Este conjunto de datos recopila información detallada sobre canciones en inglés de múltiples épocas y géneros musicales (como Pop, Rock, Jazz, Electronic, entre otros). 
+<br><br>
+<b>Relevancia:</b> Permite entender tendencias musicales a lo largo de los años, identificar artistas influyentes y ofrecer una herramienta interactiva para el aprendizaje y el entretenimiento a través del análisis de datos.
+</div>
+""", unsafe_allow_html=True)
+
 
 # ---------------------------------
 # FUNCIONES DE LA PAGINA
@@ -240,6 +253,12 @@ with c:
 
 st.markdown("<br>", unsafe_allow_html=True)
 st.subheader("💜 Nuestro equipo")
+st.markdown("""
+Facilitar el acceso a la exploración musical mediante la programación, fomentando el aprendizaje interactivo y la curiosidad sobre la historia de la música contemporánea.
+""")
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.subheader("💜 Nuestro Equipo")
 
 integrantes = [
     ("foto_estudiante_1", "Leydy Peñates"),
@@ -275,3 +294,14 @@ for col, (archivo, nombre) in zip(cols, integrantes):
 
         else:
             st.info(f"Falta la foto de {nombre} en assets/")
+# ---------------------------------
+# 6. CRÉDITOS Y LICENCIAS
+# ---------------------------------
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown("---")
+st.markdown("""
+### 📜 Créditos y Licencias
+* **Desarrolladores:** Leydy Peñates, Katherine Jaramillo y Yuliana Giraldo.
+* **Recursos Gráficos:** Iconos vectoriales personalizados en SVG y diseño de interfaz con Streamlit.
+* **Licencia:**
